@@ -1,15 +1,15 @@
 {
-  "name": "conduit-node",
+  "name": "startupSeed",
   "version": "1.0.0",
-  "description": "conduit on node",
+  "description": "node server example",
   "main": "app.js",
   "scripts": {
     "start": "node ./app.js",
+    "dev": "nodemon ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gothinkster/productionready-node-api.git"
   },
   "license": "ISC",
   "dependencies": {
