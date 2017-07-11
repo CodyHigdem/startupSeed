@@ -47,4 +47,18 @@ UserSchema.methods.generateJWT = function(){
 	}, secret);
 };
 
+/*
+* Method on user model to get the JSONrep from front auth...
+*/
+
+UserSchema.methods.toAuthJSON = function(){
+	return {
+		username: this.username,
+		email: this.email,
+		token: this.generateJWT(),
+		bio: this.bio,
+		image: this.image
+	};
+};
+
 mongoose.model('User', UserSchema);
