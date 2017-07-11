@@ -41,7 +41,7 @@ if(isProduction){
 //MODELS
 require('./models/User');
 
-
+require('./config/passport');
 app.use(require('./routes'));
 
 /// catch 404 and forward to error handler
