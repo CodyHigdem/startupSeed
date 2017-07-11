@@ -21,5 +21,14 @@ UserSchema.methods.setPassword = function(password){
 };
 
 
+/*
+* Check to see if the resulting hash matches the one that's stored in the database
+*/
+
+UserSchema.methods.validPassowrd = function(password){
+	var hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+	return this.hash === hash;
+};
+
 
 mongoose.model('User', UserSchema);
