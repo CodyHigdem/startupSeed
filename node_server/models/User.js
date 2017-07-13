@@ -62,7 +62,7 @@ UserSchema.methods.toAuthJSON = function(){
 };
 
 //PUBLIC Profile method
-UserSchema.methods.toProfileJSONFor = function(){
+UserSchema.methods.toProfileJSONFor = function(user){
 	return {
 		username: this.username,
 		bio: this.bio,
