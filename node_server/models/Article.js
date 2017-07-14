@@ -24,4 +24,43 @@ var ArticleSchema = new mongoose.schema({
 
 ArticleSchema.plugin(uniqueValidator, {message: 'is already taken'});
 
+
+/*
+slug generator
+*/
+
+ArticleSchema.methods.slugify = function(){
+	this.slug = slug(this.title) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
+};
+
+/*
+Generate slug BEFORE mongoose tries to validate the model
+*/
+
+ArticleSchema.pre('validate', function(next){
+	if(!this.slug){
+		this.slugify();
+	}
+
+	next();
+});
+
+/*
+Make a method for returning proper json output from api endpoint
+*/
+
+ArticleSchema.methods.toJSONFor = function(user){
+	return {
+		slug: this.slug,
+		title: this.title,
+		description: this.description,
+		body: this.body,
+		createdAt: this.createdAt,
+		updatedAt: this.updatedAt,
+		tagList: this.tagList,
+		favoritesCount: this.favoritesCount,
+		author: this.author.toProfileJSONFor(user) //toprofilejsonfor should provide us the basic authorfield data- WOOT!!!
+	};
+};
+
 mongoose.model('Article', ArticleSchema);
