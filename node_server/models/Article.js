@@ -12,7 +12,7 @@ var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var slug = require('slug')
 
-var ArticleSchema = new mongoose.schema({
+var ArticleSchema = new mongoose.Schema({
 	slug: {type: String, lowercase: true, unique: true},
 	title: String,
 	description: String,
