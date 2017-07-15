@@ -2,6 +2,8 @@ var router = require('express').Router();
 
 router.use('/', require('./users'));
 router.use('/profiles', require('./profiles'));
+router.use('/articles', require('./articles'));
+
 
 //validation errors from Mongoose middleware
 router.use(function(err, req, res, next){
