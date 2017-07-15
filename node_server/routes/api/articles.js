@@ -24,5 +24,19 @@ router.post('/', auth.required, function(req, res, next){
 	}).catch(next);
 });
 
+/*
+router.param to intercept :articles
+*/
+router.param('article', function(req, res, next, slug){
+	Article.findOne({ slug: slug })
+	.populate('author')
+	.then(function (article){
+		if(!article){ return res.sendStatus(404); }
+
+		req.article = article;
+
+		return next();
+	}).catch(next);
+});
 
 module.exports = router;
