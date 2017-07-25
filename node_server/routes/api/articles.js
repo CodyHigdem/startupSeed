@@ -53,5 +53,28 @@ router.get('/:article', auth.optional, function(req, res, next){
 		}).catch(next);
 });
 
+router.put('/:article', auth.required, function(req, res, next){
+	User.findById(req.payload.id).then(function(user){
+		if (req.article.author._id.toString() === req.payload.id.toString()){
+			if(typeof req.body.article.title !== 'undefined'){
+				req.article.title = req.body.article.title;
+			}
+
+		if(typeof req.body.article.description !== 'undefined'){
+			req.article.description = req.body.article.description;
+		}
+
+		if(typeof req.body.article.body !== 'undefined'){
+			req.article.body = req.body.article.body;
+		}
+
+		req.article.save().then(function(article){
+			return res.json({article: article.toJSONFor(user)});
+		}).catch(next);
+	} else {
+		return res.sendStatus(403);
+	}
+	});
+});
 
 module.exports = router;
