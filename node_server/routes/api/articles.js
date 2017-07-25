@@ -39,4 +39,19 @@ router.param('article', function(req, res, next, slug){
 	}).catch(next);
 });
 
+/*
+READ article
+*/
+router.get('/:article', auth.optional, function(req, res, next){
+	Promise.all([
+		req.payload ? User.findById(req.payload.id) : null,
+		req.article.populate('author').execPopulate()
+		]).then(function(results){
+			var user = results[0];
+
+			return res.json({ article: req.article.toJSONFor(user)});
+		}).catch(next);
+});
+
+
 module.exports = router;
