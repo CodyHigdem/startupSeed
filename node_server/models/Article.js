@@ -21,7 +21,9 @@ var ArticleSchema = new mongoose.Schema({
 	favoritesCount: { type: Number, default: 0 },
 	favorited: user ? user.isFavorite(this._id) : false,
 	tagList: [{type: String }],
-	author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+	author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+	//erference for many comments on article model
+	comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}]
 }, { timestamps: true });
 
 ArticleSchema.plugin(uniqueValidator, {message: 'is already taken'});
