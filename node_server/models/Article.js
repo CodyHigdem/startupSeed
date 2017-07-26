@@ -19,7 +19,6 @@ var ArticleSchema = new mongoose.Schema({
 	description: String,
 	body: String,
 	favoritesCount: { type: Number, default: 0 },
-	favorited: user ? user.isFavorite(this._id) : false,
 	tagList: [{type: String }],
 	author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 	//erference for many comments on article model
@@ -63,6 +62,7 @@ ArticleSchema.methods.toJSONFor = function(user){
 		updatedAt: this.updatedAt,
 		tagList: this.tagList,
 		favoritesCount: this.favoritesCount,
+		favorited: user ? user.isFavorite(this._id) : false,
 		author: this.author.toProfileJSONFor(user) //toprofilejsonfor should provide us the basic authorfield data- WOOT!!!
 	};
 };
