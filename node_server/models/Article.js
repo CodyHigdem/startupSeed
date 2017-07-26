@@ -18,6 +18,7 @@ var ArticleSchema = new mongoose.Schema({
 	description: String,
 	body: String,
 	favoritesCount: { type: Number, default: 0 },
+	favorited: user ? user.isFavorite(this._id) : false,
 	tagList: [{type: String }],
 	author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });

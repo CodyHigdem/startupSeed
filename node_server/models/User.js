@@ -97,4 +97,5 @@ UserSchema.methods.isFavorite = function(id){
 };
 
 
+
 mongoose.model('User', UserSchema);
