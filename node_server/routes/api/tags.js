@@ -4,5 +4,5 @@ var Article = mongoose.model('Article');
 
 
 
-model.exports = router;
+module.exports = router;
 
