@@ -10,6 +10,7 @@ var UserSchema = new mongoose.Schema({
 	bio: String,
 	image: String,
 	favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Article'}],
+	following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
 	hash: String,
 	salt: String
 }, { timestamps: true });
@@ -68,7 +69,7 @@ UserSchema.methods.toProfileJSONFor = function(user){
 		username: this.username,
 		bio: this.bio,
 		image: this.image || 'https://static.productionready.io/images/smiley-cyrus.jpg',
-		following: false
+		following: user ? user.isFollowing(this._id) : false
 	};
 };
 
@@ -96,6 +97,26 @@ UserSchema.methods.isFavorite = function(id){
 	});
 };
 
+//method for following another user
+UserSchema.methods.follow = function(id){
+	if(this.following.indexOf(id) === -1 ){
+		this.following.push(id);
+	}
 
+	return this.save();
+};
+
+////unfollowing method
+UserSchema.methods.unfollow = function(id){
+	this.following.remove(id);
+	return this.save();
+};
+
+//check if following
+UserSchema.methods.isFollowing = function(id){
+	return this.following.some(function(followId){
+		return followId.toString() === id.toString();
+	});
+};
 
 mongoose.model('User', UserSchema);
