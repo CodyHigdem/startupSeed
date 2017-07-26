@@ -41,6 +41,7 @@ if(isProduction){
 //MODELS
 require('./models/User');
 require('./models/Article');
+require('./models/Comment');
 require('./config/passport');
 //ROUTES
 app.use(require('./routes'));
