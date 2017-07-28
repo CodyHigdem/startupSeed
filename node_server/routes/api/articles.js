@@ -23,6 +23,15 @@ router.get('/', auth.optional, function(req, res, next){
 		offset = req.query.offset;
 	}
 
+	if(typeof req.query.tag !== 'undefined'){
+		query.tagLlist = {"$in": [req.query.tag]};
+	}
+
+	//First let's see if favorites or author query params were used, then run a user.findone to pass the user data into thep promise all
+	//else pass null 
+	//then build our query object
+
+
 	return Promise.all([
 		Article.find(query)
 			.limit(Number(limit))
