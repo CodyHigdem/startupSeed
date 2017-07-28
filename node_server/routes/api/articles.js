@@ -30,6 +30,32 @@ router.get('/', auth.optional, function(req, res, next){
 	//First let's see if favorites or author query params were used, then run a user.findone to pass the user data into thep promise all
 	//else pass null 
 	//then build our query object
+	Promise.all([
+		req.query.author ? User.findOne({username: req.query.author}) : null,
+		req.query.favorited ? User.findOne({ username: req.query.favorited}) : null
+	]).then(function(results){
+		var author = results[0];
+		var favoriter = results[1];
+
+		if(author){
+			query.author = author._id;
+		}
+
+		if(favoriter){
+			query._id = {$in: favoriter.favorites};
+		} else if(req.query.favorited){
+			query._id = {$in:[]};
+		}
+
+
+
+
+
+
+
+
+
+
 
 
 	return Promise.all([
@@ -51,6 +77,7 @@ router.get('/', auth.optional, function(req, res, next){
 				return article.toJSONFor(user);
 			}),
 			articlesCount: articlesCount
+		});
 		});
 	}).catch(next);
 });
