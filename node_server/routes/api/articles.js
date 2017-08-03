@@ -46,41 +46,71 @@ router.get('/', auth.optional, function(req, res, next){
 		} else if(req.query.favorited){
 			query._id = {$in:[]};
 		}
+		return Promise.all([
+			Article.find(query)
+				.limit(Number(limit))
+				.skip(Number(offset))
+				.sort({'createdAt': 'desc'})
+				.populate('author')
+				.exec(),
+			Article.count(query).exec(),
+			req.payload ? User.findById(req.payload.id) : null,
+		]).then(function(results){
+			var articles = results[0];
+			var articlesCount = results[1];
+			var user = results[2];
 
-
-
-
-
-
-
-
-
-
-
-
-	return Promise.all([
-		Article.find(query)
-			.limit(Number(limit))
-			.skip(Number(offset))
-			.sort({'createdAt': 'desc'})
-			.populate('author')
-			.exec(),
-		Article.count(query).exec(),
-		req.payload ? User.findById(req.payload.id) : null,
-	]).then(function(results){
-		var articles = results[0];
-		var articlesCount = results[1];
-		var user = results[2];
-
-		return res.json({
-			articles: articles.map(function(article){
-				return article.toJSONFor(user);
-			}),
-			articlesCount: articlesCount
-		});
+			return res.json({
+				articles: articles.map(function(article){
+					return article.toJSONFor(user);
+				}),
+				articlesCount: articlesCount
+			});
 		});
 	}).catch(next);
 });
+
+/*
+Article feeds end point
+*/
+
+router.get('/feed', auth.required, function(req, re, next){
+	var limit = 20;
+	var offset = 0;
+
+	if(typeof req.query.limit !== 'undefined'){
+		limit = req.query.limit;
+	}
+
+	if(typeof req.query.offset !== 'undefined'){
+		offset = req.query.offset;
+	}
+
+	User.findById(req.payload.id).then(function(user){
+		if(!user){
+			return res.sendStatus(401);
+		}
+
+		Promise.all([
+			Article.find({ author: {$in: user.following}})
+				.limit(Number(limit))
+				.skip(Number(offset))
+				.populate('author')
+				.exec(),
+			Article.count({ author: {$in: user.following}})
+		]).then(function(results){
+			var articles = results[0];
+			var articlesCount = results[1];
+
+			return res.json({
+				articles: articles.map(function(article){
+					return article.toJSONFor(user);
+				}),
+				articlesCount: articlesCount
+			});
+		}).catch(next);
+	});
+})
 
 /*
 CREATE ARTICLE
